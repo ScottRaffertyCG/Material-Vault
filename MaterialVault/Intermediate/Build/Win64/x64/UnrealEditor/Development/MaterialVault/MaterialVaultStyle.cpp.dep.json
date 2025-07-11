@@ -1,0 +1,26 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\source\\materialvault\\private\\materialvaultstyle.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\info\\documents\\unreal projects\\ue6test\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\materialvault\\definitions.materialvault.h",
+            "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\source\\materialvault\\public\\materialvaultstyle.h",
+            "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\source\\materialvault\\public\\materialvault.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\slatecore\\public\\styling\\slatestyleregistry.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\engine\\public\\slate\\slategameresources.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\projects\\public\\interfaces\\ipluginmanager.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\projects\\public\\plugindescriptor.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\projects\\public\\custombuildsteps.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\projects\\public\\localizationdescriptor.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\projects\\public\\moduledescriptor.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\projects\\public\\plugindisalloweddescriptor.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\projects\\public\\pluginreferencedescriptor.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\projects\\public\\versescope.h",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\slatecore\\public\\styling\\slatestylemacros.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

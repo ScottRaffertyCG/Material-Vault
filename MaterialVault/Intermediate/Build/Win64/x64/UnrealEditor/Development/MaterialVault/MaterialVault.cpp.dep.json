@@ -1,0 +1,16 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\source\\materialvault\\private\\materialvault.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\info\\documents\\unreal projects\\ue6test\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\materialvault\\definitions.materialvault.h",
+            "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\source\\materialvault\\public\\materialvault.h",
+            "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\source\\materialvault\\public\\materialvaultstyle.h",
+            "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\source\\materialvault\\public\\materialvaultcommands.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

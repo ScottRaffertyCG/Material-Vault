@@ -1,0 +1,53 @@
+"C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Source/MaterialVault/Private/MaterialVault.cpp"
+@"C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/MaterialVault.Shared.rsp"
+/FI"C:/Users/info/Documents/Unreal Projects/UE6Test/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealEd/SharedPCH.UnrealEd.Cpp20.h"
+/FI"C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/Definitions.MaterialVault.h"
+/Yu"C:/Users/info/Documents/Unreal Projects/UE6Test/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealEd/SharedPCH.UnrealEd.Cpp20.h"
+/Fp"C:/Users/info/Documents/Unreal Projects/UE6Test/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealEd/SharedPCH.UnrealEd.Cpp20.h.pch"
+/Fo"C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/MaterialVault.cpp.obj"
+/experimental:log "C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/MaterialVault.cpp.sarif"
+/sourceDependencies "C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/MaterialVault.cpp.dep.json"
+/d2ssa-cfg-question-
+/Zc:inline
+/nologo
+/Oi
+/FC
+/diagnostics:caret
+/c
+/Gw
+/Gy
+/utf-8
+/wd4819
+/DSAL_NO_ATTRIBUTE_DECLARATIONS=1
+/permissive-
+/Zc:strictStrings-
+/Zc:__cplusplus
+/D_CRT_STDIO_LEGACY_WIDE_SPECIFIERS=1
+/D_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS=1
+/D_WINDLL
+/D_DISABLE_EXTENDED_ALIGNED_STORAGE
+/Ob2
+/d2ExtendedWarningInfo
+/Ox
+/Ot
+/GF
+/errorReport:prompt
+/EHsc
+/DPLATFORM_EXCEPTIONS_DISABLED=0
+/Z7
+/MD
+/bigobj
+/fp:fast
+/Zo
+/Zp8
+/W4
+/we4456
+/we4458
+/we4459
+/wd4244
+/wd4838
+/TP
+/GR-
+/std:c++20
+/Zc:preprocessor
+/wd5054

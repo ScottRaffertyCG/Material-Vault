@@ -1,0 +1,15 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-MaterialVault.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:/Users/info/Documents/Unreal Projects/UE6Test/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealEd/SharedPCH.UnrealEd.Cpp20.h.obj"
+"C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/Module.MaterialVault.cpp.obj"
+"C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/MaterialVault.cpp.obj"
+"C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/MaterialVaultCommands.cpp.obj"
+"C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/MaterialVaultStyle.cpp.obj"
+"C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/Default.rc2.res"
+/OUT:"C:/Users/info/Documents/Unreal Projects/UE6Test/Plugins/MaterialVault/Intermediate/Build/Win64/x64/UnrealEditor/Development/MaterialVault/UnrealEditor-MaterialVault.lib"

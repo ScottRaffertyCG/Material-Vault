@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\materialvault\\module.materialvault.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\info\\documents\\unreal projects\\ue6test\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealed\\sharedpch.unrealed.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\materialvault\\definitions.materialvault.h",
+            "c:\\users\\info\\documents\\unreal projects\\ue6test\\plugins\\materialvault\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\materialvault\\permoduleinline.gen.cpp",
+            "d:\\software\\epic games\\ue_5.6\\engine\\source\\runtime\\core\\public\\hal\\permoduleinline.inl"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
