@@ -1,9 +1,6 @@
 # Unreal Engine
-Binaries/
 DerivedDataCache/
-Intermediate/
 Saved/
-Build/
 .vs/
 
 # Visual Studio
