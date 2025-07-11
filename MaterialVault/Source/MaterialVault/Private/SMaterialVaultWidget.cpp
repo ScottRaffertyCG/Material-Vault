@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "SMaterialVaultWidget.h"
 #include "MaterialVaultManager.h"
 #include "SMaterialVaultFolderTree.h"

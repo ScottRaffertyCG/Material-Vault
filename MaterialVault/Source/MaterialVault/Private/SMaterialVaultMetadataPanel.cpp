@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "SMaterialVaultMetadataPanel.h"
 #include "MaterialVaultManager.h"
 #include "Engine/Engine.h"

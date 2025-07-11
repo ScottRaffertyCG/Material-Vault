@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "SMaterialVaultCategoriesPanel.h"
 #include "MaterialVaultManager.h"
 #include "Widgets/Layout/SBorder.h"

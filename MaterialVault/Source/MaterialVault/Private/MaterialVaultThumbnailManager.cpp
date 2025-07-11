@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "MaterialVaultThumbnailManager.h"
 #include "Materials/MaterialInterface.h"
 #include "Engine/Texture2D.h"
