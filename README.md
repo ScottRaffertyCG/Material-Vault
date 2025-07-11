@@ -1,180 +1,149 @@
-# MaterialVault - Unreal Engine Material Library Plugin
+# MaterialVault
 
-A comprehensive material library and management plugin for Unreal Engine 5.6+ that provides an intuitive interface for browsing, organizing, and applying materials in your projects.
+A comprehensive material library management plugin for Unreal Engine 5.6+ that transforms how you organize, browse, and apply materials in your projects.
 
-![MaterialVault Interface](https://via.placeholder.com/800x450/2D2D30/FFFFFF?text=MaterialVault+Plugin+Interface)
+![MaterialVault Interface](https://github.com/ScottRaffertyCG/Material-Vault/blob/main/Media/Material%20Vault%20Launch.gif)
 
-## ✨ Features
+## Features
 
-### 📁 **Smart Organization**
-- **Folder Tree View**: Hierarchical browser with automatic folder detection
-- **Categories System**: Organize materials by categories with automatic categorization
-- **Dual Navigation**: Switch between folder-based and category-based browsing
-- **Engine Content Support**: Browse materials from Engine, Plugins, and Project content
+**Current Implementation**
+- Hierarchical folder structure displaying content organization
+- Visual thumbnail grid with material previews
+- Metadata panel for viewing material information
+- Basic search functionality across material names
+- Tag management system for organizing materials
+- Asset Registry integration for material discovery
 
-### 🔍 **Advanced Browsing**
-- **Grid & List Views**: Toggle between thumbnail grid and detailed list views
-- **Live Search**: Real-time filtering as you type
-- **Tag System**: Comprehensive tagging with visual tag management
-- **Thumbnail Preview**: High-quality material thumbnails with caching
+**Powerful Search & Discovery**
+- Real-time search across material names and metadata
+- Tag-based filtering for quick material discovery
+- Combined search and filter operations
+- Asset Registry integration for fast lookups
 
-### 📝 **Rich Metadata**
-- **Material Properties**: Author, category, notes, creation date
-- **Tag Management**: Add, remove, and filter by custom tags
-- **Texture Dependencies**: Automatic tracking of texture dependencies
-- **Rename Support**: Update material display names (metadata-only)
+**Streamlined Workflow**
+- Right-click context menus for material operations
+- One-click material application to selected actors
+- Undo/redo support for material changes
+- Drag-and-drop support for intuitive interaction
+- Thumbnail caching system for responsive UI
+- Memory-efficient asset handling
 
-### 🎨 **Material Application**
-- **One-Click Apply**: Right-click materials to apply to selected objects
-- **Batch Operations**: Apply materials to multiple selected static meshes
-- **Undo Support**: Full transaction support with undo/redo
-- **Smart Notifications**: Success/warning/error feedback
+## Installation
 
-### ⚙️ **Customization**
-- **View Preferences**: Adjustable thumbnail sizes and view modes
-- **Sort Options**: Multiple sorting methods (name, date, author)
-- **Settings Persistence**: Your preferences are automatically saved
-- **Toolbar Integration**: Convenient toolbar button for quick access
-
-## 🚀 Installation
-
-### Prerequisites
-- Unreal Engine 5.6 or later
-- Windows development environment
-- Visual Studio 2022 (for building from source)
-
-### Option 1: Plugin Installation
-1. Download the latest release from [Releases](../../releases)
-2. Extract the `MaterialVault` folder to your project's `Plugins` directory
+### Option 1: Plugin Directory
+1. Download or clone this repository
+2. Copy the `MaterialVault` folder to your project's `Plugins` directory
 3. Restart Unreal Engine
-4. Enable the plugin in **Edit → Plugins → Project → Other**
+4. Enable the plugin in Project Settings → Plugins
 
-### Option 2: Engine Installation
-1. Extract the `MaterialVault` folder to `[UE5_Install]/Engine/Plugins/Editor/`
-2. Restart Unreal Engine (available in all projects)
+### Option 2: Engine Plugins
+1. Copy the `MaterialVault` folder to `[UE Install]/Engine/Plugins/Editor/`
+2. Restart Unreal Engine
+3. The plugin will be available for all projects
 
-### Option 3: Build from Source
-```bash
-git clone https://github.com/YourUsername/MaterialVault.git
-cd MaterialVault
-# Build using UE5 build tools or Visual Studio
-```
-
-## 📖 Usage
+## Usage
 
 ### Opening MaterialVault
-- **Toolbar**: Click the MaterialVault button in the Level Editor toolbar
-- **Menu**: **Window → Material Vault**
-- **Shortcut**: Dock the tab wherever you prefer
+- **Menu**: Tools → MaterialVault
+- **Toolbar**: Click the MaterialVault button in the main toolbar
 
-### Basic Workflow
-1. **Browse Materials**: Use the folder tree or categories panel to navigate
-2. **Search & Filter**: Use the search box or click tags to filter materials
-3. **Preview**: View material thumbnails and metadata in the right panel
-4. **Apply**: Select objects in the viewport, then right-click a material and choose "Apply Material"
+### Interface Overview
+The MaterialVault window features a three-panel layout:
 
-### Advanced Features
-- **Edit Metadata**: Select a material and edit its properties in the metadata panel
-- **Manage Tags**: Add/remove tags using the tag editor
-- **Organize**: Create custom categories and organize your material library
-- **Refresh**: Use the refresh button to update the library after adding new materials
+**Left Panel - Folder Tree**
+- Navigate through your material folder hierarchy
+- Create new folders with right-click menu
+- Organize materials by project, type, or any structure you prefer
+- Switch between folder view and categories view
+- Browse materials organized by content folder structure
 
-## 🛠️ Development
+**Center Panel - Material Grid**
+- Browse materials with thumbnail previews
+- Search materials by name using the search bar
+- Right-click materials for context menu options
+- Double-click to apply materials to selected actors
+
+**Right Panel - Metadata & Categories**
+- View detailed information about selected materials
+- Add and remove tags for better organization
+- Filter materials by selected tags
+- Manage material categories
+
+### Material Management
+
+**Current Functionality**
+- Materials are automatically discovered through the Asset Registry
+- Browse materials using the hierarchical folder structure
+- View material thumbnails and basic information
+- Search materials by name using the search bar
+- Add/remove tags for material organization (UI implemented)
+
+**Applying Materials**
+- Select one or more actors in the viewport
+- Right-click a material in MaterialVault
+- Choose "Apply to Selected Actors"
+- Changes support full undo/redo functionality
+
+**Organizing with Tags**
+- Select a material to view its metadata
+- Add relevant tags in the Categories panel
+- Use tag filtering to quickly find materials
+- Tags are stored in JSON files alongside your materials
+
+## Technical Details
 
 ### Architecture
+- **UMaterialVaultManager**: EditorSubsystem managing material data and operations
+- **SMaterialVaultWidget**: Main Slate widget orchestrating the three-panel interface
+- **Asset Registry Integration**: Efficient material discovery and monitoring
+- **JSON Metadata**: Extensible storage for tags and custom properties
+
+### File Structure
 ```
 MaterialVault/
 ├── Source/MaterialVault/
-│   ├── Private/
-│   │   ├── MaterialVault.cpp              # Main module
-│   │   ├── MaterialVaultManager.cpp       # Core management system
-│   │   ├── MaterialVaultStyle.cpp         # UI styling
-│   │   ├── SMaterialVaultWidget.cpp       # Main interface
-│   │   ├── SMaterialVaultFolderTree.cpp   # Folder navigation
-│   │   ├── SMaterialVaultMaterialGrid.cpp # Material browser
-│   │   ├── SMaterialVaultMetadataPanel.cpp # Property editor
-│   │   └── SMaterialVaultCategoriesPanel.cpp # Categories system
-│   └── Public/
-│       ├── MaterialVaultTypes.h           # Data structures
-│       ├── MaterialVaultManager.h         # Manager interface
-│       └── [Other headers...]
+│   ├── Private/           # Implementation files
+│   └── Public/            # Header files
 ├── Resources/
-│   └── Icon128.png                        # Plugin icon
-└── MaterialVault.uplugin                  # Plugin definition
+│   └── Icon128.png        # Plugin icon
+└── MaterialVault.uplugin  # Plugin descriptor
 ```
 
-### Key Components
-- **UMaterialVaultManager**: EditorSubsystem handling data management
-- **SMaterialVaultWidget**: Main 3-panel interface (folders, grid, metadata)
-- **FMaterialVaultMetadata**: JSON-serialized metadata storage
-- **MaterialVaultTypes.h**: Comprehensive data structures and enums
+### Performance Considerations
+- Thumbnail generation is cached to disk for fast subsequent loads
+- Asset Registry queries minimize memory usage
+- Lazy loading of material data improves startup times
+- Efficient UI updates through Slate's reactive system
 
-### Building
-```bash
-# Generate project files
-UnrealBuildTool.exe -projectfiles -project="YourProject.uproject" -game -rocket -progress
+## Development
 
-# Build the plugin
-MSBuild.exe YourProject.sln -p:Configuration=Development -p:Platform=x64
-```
+### Building from Source
+1. Ensure you have UE 5.6+ installed with C++ development tools
+2. Clone this repository to your project's Plugins folder
+3. Generate project files and compile
 
-## 🤝 Contributing
+### Plugin Dependencies
+- UnrealEd
+- EditorStyle
+- EditorWidgets
+- ToolMenus
+- AssetRegistry
+- ContentBrowser
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+## Compatibility
 
-### Development Setup
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and test thoroughly
-4. Commit with clear messages: `git commit -m "Add amazing feature"`
-5. Push to your fork: `git push origin feature/amazing-feature`
-6. Open a Pull Request
+- **Unreal Engine**: 5.6+
+- **Platforms**: Windows,(editor only). Untested on Mac or Linux yet
+- **Project Types**: C++ and Blueprint projects
 
-### Code Style
-- Follow UE5 coding standards
-- Use meaningful variable and function names
-- Add comments for complex logic
-- Ensure all public APIs are documented
+## Contributing
 
-## 📋 Changelog
+Contributions are welcome!
 
-### Version 1.0.0 (Latest)
-- ✅ Initial release
-- ✅ Three-panel interface (folders, materials, metadata)
-- ✅ Grid and list view modes
-- ✅ Comprehensive metadata system
-- ✅ Tag management and filtering
-- ✅ Material application with undo support
-- ✅ Folder and category-based organization
-- ✅ Texture dependency tracking
-- ✅ Settings persistence
-
-See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
-
-## 🐛 Known Issues
-
-- Material renaming only affects display names (not actual asset names)
-- Large material libraries may experience slower initial loading
-- Thumbnail generation depends on UE5's asset thumbnail system
-
-## 📜 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Changelog
 
-- Epic Games for the Unreal Engine framework
-- The UE5 community for inspiration and feedback
-- Contributors who helped improve this plugin
-
-## 📞 Support
-
-- **Issues**: Report bugs and request features via [GitHub Issues](../../issues)
-- **Discussions**: Join the conversation in [GitHub Discussions](../../discussions)
-- **Documentation**: Additional docs available in the [Wiki](../../wiki)
-
----
-
-**Made with ❤️ for the Unreal Engine community**
-
-*If this plugin helps your workflow, consider giving it a ⭐ on GitHub!* 
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history and feature additions. 
