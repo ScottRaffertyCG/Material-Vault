@@ -2,7 +2,7 @@
 
 A comprehensive material library management plugin for Unreal Engine 5.6+ that transforms how you organize, browse, and apply materials in your projects.
 
-![MaterialVault Interface](https://github.com/ScottRaffertyCG/Material-Vault/blob/main/Media/Material%20Vault%20Launch.gif)
+![MaterialVault Interface](https://github.com/ScottRaffertyCG/Material-Vault/blob/main/Media/MaterialVaultLogo.png)
 
 ## Features
 
@@ -46,6 +46,8 @@ A comprehensive material library management plugin for Unreal Engine 5.6+ that t
 ### Opening MaterialVault
 - **Menu**: Tools → MaterialVault
 - **Toolbar**: Click the MaterialVault button in the main toolbar
+
+  ![MaterialVault Interface](https://github.com/ScottRaffertyCG/Material-Vault/blob/main/Media/Material%20Vault%20Launch.gif)
 
 ### Interface Overview
 The MaterialVault window features a three-panel layout:
