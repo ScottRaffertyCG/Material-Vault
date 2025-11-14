@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,6 +15,7 @@
 #include "Widgets/Input/SComboBox.h"
 #include "Widgets/Views/SListView.h"
 #include "Widgets/Images/SImage.h"
+#include "Brushes/SlateDynamicImageBrush.h"
 #include "AssetThumbnail.h"
 #include "MaterialVaultTypes.h"
 
@@ -163,6 +166,11 @@ private:
 	TSharedPtr<SMaterialVaultTextureDependencies> TextureDependencies;
 	TSharedPtr<SButton> SaveButton;
 	TSharedPtr<SButton> RevertButton;
+	TSharedPtr<SBorder> PreviewImageContainer;
+	TSharedPtr<FAssetThumbnail> PreviewThumbnail;
+	TSharedPtr<FSlateDynamicImageBrush> CustomPreviewBrush;
+	TWeakObjectPtr<UTexture2D> CurrentPreviewTexture;
+	FVector2D PreviewImageSize = FVector2D(256.0f, 256.0f);
 
 	// State tracking
 	bool bHasUnsavedChanges;
@@ -192,6 +200,9 @@ private:
 	// Thumbnail operations
 	TSharedPtr<SWidget> OnMaterialPreviewContextMenuOpening();
 	void OnChangeThumbnail();
+	void UpdatePreviewWidget();
+	TSharedRef<SWidget> CreatePreviewPlaceholder() const;
+	void RefreshCustomPreviewBrush();
 
 	// Helper functions
 	void UpdateUI();

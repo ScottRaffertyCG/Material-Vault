@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -41,11 +43,13 @@ public:
 	// Delegates
 	DECLARE_DELEGATE_OneParam(FOnMaterialClicked, TSharedPtr<FMaterialVaultMaterialItem>);
 	DECLARE_DELEGATE_OneParam(FOnMaterialDoubleClicked, TSharedPtr<FMaterialVaultMaterialItem>);
+	DECLARE_DELEGATE_RetVal_ThreeParams(FReply, FOnMaterialDragDetected, TSharedPtr<FMaterialVaultMaterialItem>, const FGeometry&, const FPointerEvent&);
 	
 	FOnMaterialClicked OnMaterialLeftClicked;
 	FOnMaterialClicked OnMaterialRightClicked;
 	FOnMaterialClicked OnMaterialMiddleClicked;
 	FOnMaterialDoubleClicked OnMaterialDoubleClicked;
+	FOnMaterialDragDetected OnMaterialDragDetected;
 
 private:
 	TSharedPtr<FMaterialVaultMaterialItem> MaterialItem;
@@ -85,6 +89,7 @@ public:
 	FOnMaterialClicked OnMaterialLeftClicked;
 	FOnMaterialClicked OnMaterialRightClicked;
 	FOnMaterialDoubleClicked OnMaterialDoubleClicked;
+	SMaterialVaultMaterialTile::FOnMaterialDragDetected OnMaterialDragDetected;
 
 private:
 	TSharedPtr<FMaterialVaultMaterialItem> MaterialItem;
@@ -172,6 +177,8 @@ private:
 	void OnMaterialRightClicked(TSharedPtr<FMaterialVaultMaterialItem> Material);
 	void OnMaterialMiddleClicked(TSharedPtr<FMaterialVaultMaterialItem> Material);
 	void OnMaterialDoubleClickedInternal(TSharedPtr<FMaterialVaultMaterialItem> Material);
+	FReply HandleMaterialDragDetected(TSharedPtr<FMaterialVaultMaterialItem> Material, const FGeometry& MyGeometry, const FPointerEvent& MouseEvent);
+	void GatherDragMaterials(TArray<TSharedPtr<FMaterialVaultMaterialItem>>& OutMaterials, TSharedPtr<FMaterialVaultMaterialItem> PrimaryItem) const;
 
 	// Context menu
 	TSharedPtr<SWidget> OnContextMenuOpening();

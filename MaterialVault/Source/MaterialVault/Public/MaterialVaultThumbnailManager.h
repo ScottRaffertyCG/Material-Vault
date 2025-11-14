@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -28,8 +30,10 @@ public:
 	void ClearThumbnailForMaterial(const FString& MaterialPath);
 	
 	// Thumbnail generation
-	UTexture2D* GenerateMaterialThumbnail(UMaterialInterface* Material, int32 ThumbnailSize = 128);
+	UTexture2D* GenerateMaterialThumbnail(UMaterialInterface* Material, int32 ThumbnailSize = 128, bool bForceRegenerate = false);
 	TSharedPtr<FSlateDynamicImageBrush> CreateBrushFromTexture(UTexture2D* Texture, int32 ThumbnailSize = 128);
+	void UpdateCacheWithThumbnail(const FString& MaterialPath, UTexture2D* Thumbnail, int32 ThumbnailSize);
+	UTexture2D* ImportThumbnailFromImage(UMaterialInterface* Material, const FString& SourceFile, int32 ThumbnailSize = 512);
 	
 	// Async thumbnail loading
 	void LoadThumbnailAsync(TSharedPtr<FMaterialVaultMaterialItem> MaterialItem, int32 ThumbnailSize = 128);

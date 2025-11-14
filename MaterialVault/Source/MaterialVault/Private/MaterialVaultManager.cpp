@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #include "MaterialVaultManager.h"
 #include "MaterialVaultThumbnailManager.h"
 #include "AssetRegistry/AssetRegistryModule.h"
@@ -7,6 +9,7 @@
 #include "Materials/MaterialInstanceConstant.h"
 #include "Engine/Engine.h"
 #include "Editor.h"
+#include "Engine/Texture2D.h"
 #include "Misc/DateTime.h"
 #include "HAL/PlatformFilemanager.h"
 #include "Misc/FileHelper.h"
@@ -220,9 +223,28 @@ TArray<TSharedPtr<FMaterialVaultMaterialItem>> UMaterialVaultManager::GetMateria
 	TSharedPtr<FMaterialVaultFolderNode> FolderNode = FindFolder(FolderPath);
 	if (FolderNode.IsValid())
 	{
-		TArray<TSharedPtr<FMaterialVaultMaterialItem>> SortedMaterials = FolderNode->Materials;
-		SortMaterials(SortedMaterials);
-		return SortedMaterials;
+		TArray<TSharedPtr<FMaterialVaultMaterialItem>> CollectedMaterials;
+
+		TFunction<void(const TSharedPtr<FMaterialVaultFolderNode>&)> GatherMaterialsRecursive;
+		GatherMaterialsRecursive = [&CollectedMaterials, &GatherMaterialsRecursive](const TSharedPtr<FMaterialVaultFolderNode>& Node)
+		{
+			if (!Node.IsValid())
+			{
+				return;
+			}
+
+			CollectedMaterials.Append(Node->Materials);
+
+			for (const TSharedPtr<FMaterialVaultFolderNode>& Child : Node->Children)
+			{
+				GatherMaterialsRecursive(Child);
+			}
+		};
+
+		GatherMaterialsRecursive(FolderNode);
+
+		SortMaterials(CollectedMaterials);
+		return CollectedMaterials;
 	}
 	return TArray<TSharedPtr<FMaterialVaultMaterialItem>>();
 }
@@ -388,6 +410,53 @@ void UMaterialVaultManager::ApplyMaterialToSelection(TSharedPtr<FMaterialVaultMa
 	}
 }
 
+void UMaterialVaultManager::RegenerateMaterialThumbnail(TSharedPtr<FMaterialVaultMaterialItem> MaterialItem, int32 ThumbnailSize)
+{
+	if (!MaterialItem.IsValid() || !ThumbnailManager.IsValid())
+	{
+		return;
+	}
+
+	UMaterialInterface* Material = MaterialItem->MaterialPtr.LoadSynchronous();
+	if (!Material)
+	{
+		return;
+	}
+
+	const FString MaterialPath = MaterialItem->AssetData.GetObjectPathString();
+	ThumbnailManager->ClearThumbnailForMaterial(MaterialPath);
+
+	if (UTexture2D* GeneratedThumbnail = ThumbnailManager->GenerateMaterialThumbnail(Material, ThumbnailSize, true))
+	{
+		ThumbnailManager->UpdateCacheWithThumbnail(MaterialPath, GeneratedThumbnail, ThumbnailSize);
+		OnRefreshRequested.Broadcast();
+	}
+}
+
+UTexture2D* UMaterialVaultManager::ImportCustomThumbnail(TSharedPtr<FMaterialVaultMaterialItem> MaterialItem, const FString& SourceFile, int32 ThumbnailSize)
+{
+	if (!MaterialItem.IsValid() || !ThumbnailManager.IsValid() || SourceFile.IsEmpty())
+	{
+		return nullptr;
+	}
+
+	UMaterialInterface* Material = MaterialItem->MaterialPtr.LoadSynchronous();
+	if (!Material)
+	{
+		return nullptr;
+	}
+
+	if (UTexture2D* ImportedThumbnail = ThumbnailManager->ImportThumbnailFromImage(Material, SourceFile, ThumbnailSize))
+	{
+		const FString MaterialPath = MaterialItem->AssetData.GetObjectPathString();
+		ThumbnailManager->UpdateCacheWithThumbnail(MaterialPath, ImportedThumbnail, ThumbnailSize);
+		OnRefreshRequested.Broadcast();
+		return ImportedThumbnail;
+	}
+
+	return nullptr;
+}
+
 void UMaterialVaultManager::SaveMaterialMetadata(TSharedPtr<FMaterialVaultMaterialItem> MaterialItem)
 {
 	if (!MaterialItem.IsValid())
@@ -408,6 +477,7 @@ void UMaterialVaultManager::SaveMaterialMetadata(TSharedPtr<FMaterialVaultMateri
 	JsonObject->SetStringField(TEXT("LastModified"), MaterialItem->Metadata.LastModified.ToString());
 	JsonObject->SetStringField(TEXT("Notes"), MaterialItem->Metadata.Notes);
 	JsonObject->SetStringField(TEXT("Category"), MaterialItem->Metadata.Category);
+	JsonObject->SetStringField(TEXT("CustomThumbnailPath"), MaterialItem->Metadata.CustomThumbnailPath);
 	
 	TArray<TSharedPtr<FJsonValue>> TagsArray;
 	for (const FString& Tag : MaterialItem->Metadata.Tags)
@@ -466,6 +536,15 @@ void UMaterialVaultManager::LoadMaterialMetadata(TSharedPtr<FMaterialVaultMateri
 				{
 					MaterialItem->Metadata.Tags.Add(TagValue->AsString());
 				}
+			}
+
+			if (JsonObject->HasTypedField<EJson::String>(TEXT("CustomThumbnailPath")))
+			{
+				MaterialItem->Metadata.CustomThumbnailPath = JsonObject->GetStringField(TEXT("CustomThumbnailPath"));
+			}
+			else
+			{
+				MaterialItem->Metadata.CustomThumbnailPath.Empty();
 			}
 			
 			// Cache the loaded metadata

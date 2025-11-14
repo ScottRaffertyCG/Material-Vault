@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"

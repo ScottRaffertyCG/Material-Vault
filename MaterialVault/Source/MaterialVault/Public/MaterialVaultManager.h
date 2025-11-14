@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -42,6 +44,8 @@ public:
 	// Metadata operations
 	void SaveMaterialMetadata(TSharedPtr<FMaterialVaultMaterialItem> MaterialItem);
 	void LoadMaterialMetadata(TSharedPtr<FMaterialVaultMaterialItem> MaterialItem);
+	void RegenerateMaterialThumbnail(TSharedPtr<FMaterialVaultMaterialItem> MaterialItem, int32 ThumbnailSize = 512);
+	UTexture2D* ImportCustomThumbnail(TSharedPtr<FMaterialVaultMaterialItem> MaterialItem, const FString& SourceFile, int32 ThumbnailSize = 512);
 	
 	// Settings
 	const FMaterialVaultSettings& GetSettings() const { return Settings; }

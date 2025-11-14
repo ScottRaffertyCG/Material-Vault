@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #include "SMaterialVaultWidget.h"
 #include "MaterialVaultManager.h"
 #include "SMaterialVaultFolderTree.h"
@@ -86,6 +88,16 @@ void SMaterialVaultWidget::Construct(const FArguments& InArgs)
 	
 	// Initial refresh
 	RefreshInterface();
+
+	// Ensure default tab content is initialized
+	if (!bShowFolders)
+	{
+		OnCategoriesTabClicked();
+	}
+	else
+	{
+		OnFoldersTabClicked();
+	}
 }
 
 void SMaterialVaultWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)

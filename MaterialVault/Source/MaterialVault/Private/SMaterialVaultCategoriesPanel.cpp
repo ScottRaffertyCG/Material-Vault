@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #include "SMaterialVaultCategoriesPanel.h"
 #include "MaterialVaultManager.h"
 #include "Widgets/Layout/SBorder.h"
@@ -388,6 +390,7 @@ void SMaterialVaultCategoriesPanel::OnDeleteCategory(TSharedPtr<FMaterialVaultCa
 	
 	// Get or create "Uncategorized" category
 	TSharedPtr<FMaterialVaultCategoryItem> UncategorizedCategory = GetOrCreateCategory(TEXT("Uncategorized"));
+	bool bMetadataUpdated = false;
 	
 	// Move all materials from the deleted category to "Uncategorized"
 	for (const auto& Material : CategoryToDelete->Materials)
@@ -395,12 +398,21 @@ void SMaterialVaultCategoriesPanel::OnDeleteCategory(TSharedPtr<FMaterialVaultCa
 		if (Material.IsValid())
 		{
 			// Update the material's metadata
-			Material->Metadata.Category = TEXT("Uncategorized");
+			if (Material->Metadata.Category != TEXT("Uncategorized"))
+			{
+				Material->Metadata.Category = TEXT("Uncategorized");
+				bMetadataUpdated = true;
+			}
 			
 			// Add to uncategorized (avoid duplicates)
 			if (!UncategorizedCategory->Materials.Contains(Material))
 			{
 				UncategorizedCategory->Materials.Add(Material);
+			}
+
+			if (MaterialVaultManager)
+			{
+				MaterialVaultManager->SaveMaterialMetadata(Material);
 			}
 		}
 	}
@@ -422,7 +434,12 @@ void SMaterialVaultCategoriesPanel::OnDeleteCategory(TSharedPtr<FMaterialVaultCa
 	}
 	
 	// Refresh the display
-	ApplyFilter();
+	if (MaterialVaultManager && bMetadataUpdated)
+	{
+		MaterialVaultManager->RefreshMaterialDatabase();
+	}
+
+	RefreshCategories();
 }
 
 void SMaterialVaultCategoriesPanel::ApplyFilter()
@@ -673,6 +690,7 @@ void SMaterialVaultCategoriesPanel::OnDeleteTag(TSharedPtr<FString> TagToDelete)
 	}
 	
 	FString TagName = *TagToDelete;
+	bool bMetadataChanged = false;
 	
 	// Remove the tag from all materials that have it
 	TSharedPtr<FMaterialVaultFolderNode> RootFolder = MaterialVaultManager->GetRootFolder();
@@ -695,6 +713,7 @@ void SMaterialVaultCategoriesPanel::OnDeleteTag(TSharedPtr<FString> TagToDelete)
 						// Save metadata if we removed the tag
 						if (RemovedCount > 0)
 						{
+							bMetadataChanged = true;
 							MaterialVaultManager->SaveMaterialMetadata(Material);
 						}
 					}
@@ -710,6 +729,11 @@ void SMaterialVaultCategoriesPanel::OnDeleteTag(TSharedPtr<FString> TagToDelete)
 		RemoveTagFromMaterials(RootFolder);
 	}
 	
+	if (bMetadataChanged)
+	{
+		MaterialVaultManager->RefreshMaterialDatabase();
+	}
+
 	// Refresh the tags list
 	RefreshTags();
 	

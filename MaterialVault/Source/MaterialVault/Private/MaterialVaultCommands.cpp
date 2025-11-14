@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #include "MaterialVaultCommands.h"
 
 #define LOCTEXT_NAMESPACE "FMaterialVaultModule"

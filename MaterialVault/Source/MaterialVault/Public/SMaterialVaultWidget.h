@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -86,7 +88,7 @@ private:
 	TSharedPtr<FMaterialVaultMaterialItem> CurrentSelectedMaterial;
 	FString CurrentSelectedTag; // Currently selected tag for filtering
 	FString CurrentSearchText;
-	bool bShowFolders = true;
+	bool bShowFolders = false;
 
 	// Manager reference
 	UMaterialVaultManager* MaterialVaultManager;

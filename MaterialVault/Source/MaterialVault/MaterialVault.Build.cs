@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 using UnrealBuildTool;
 
 public class MaterialVault : ModuleRules

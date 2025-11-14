@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #include "SMaterialVaultMaterialGrid.h"
 #include "MaterialVaultManager.h"
 #include "Engine/Engine.h"
@@ -15,6 +17,8 @@
 #include "ContentBrowserModule.h"
 #include "IContentBrowserSingleton.h"
 #include "HAL/PlatformApplicationMisc.h"
+#include "DragAndDrop/AssetDragDropOp.h"
+#include "Styling/AppStyle.h"
 
 #define LOCTEXT_NAMESPACE "MaterialVaultMaterialGrid"
 
@@ -128,8 +132,10 @@ FReply SMaterialVaultMaterialTile::OnDragDetected(const FGeometry& MyGeometry, c
 {
 	if (MaterialItem.IsValid() && MouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
 	{
-		// TODO: Implement drag and drop operation
-		// This will be enhanced in Phase 3.2
+		if (OnMaterialDragDetected.IsBound())
+		{
+			return OnMaterialDragDetected.Execute(MaterialItem, MyGeometry, MouseEvent);
+		}
 		return FReply::Handled();
 	}
 
@@ -262,7 +268,10 @@ FReply SMaterialVaultMaterialListItem::OnDragDetected(const FGeometry& MyGeometr
 {
 	if (MaterialItem.IsValid() && MouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
 	{
-		// TODO: Implement drag and drop operation
+		if (OnMaterialDragDetected.IsBound())
+		{
+			return OnMaterialDragDetected.Execute(MaterialItem, MyGeometry, MouseEvent);
+		}
 		return FReply::Handled();
 	}
 
@@ -489,6 +498,7 @@ TSharedRef<ITableRow> SMaterialVaultMaterialGrid::OnGenerateTileWidget(TSharedPt
 	TileWidget->OnMaterialRightClicked.BindSP(this, &SMaterialVaultMaterialGrid::OnMaterialRightClicked);
 	TileWidget->OnMaterialMiddleClicked.BindSP(this, &SMaterialVaultMaterialGrid::OnMaterialMiddleClicked);
 	TileWidget->OnMaterialDoubleClicked.BindSP(this, &SMaterialVaultMaterialGrid::OnMaterialDoubleClickedInternal);
+	TileWidget->OnMaterialDragDetected.BindSP(this, &SMaterialVaultMaterialGrid::HandleMaterialDragDetected);
 
 	return TileWidget;
 }
@@ -506,6 +516,7 @@ TSharedRef<ITableRow> SMaterialVaultMaterialGrid::OnGenerateListWidget(TSharedPt
 	ListWidget->OnMaterialLeftClicked.BindSP(this, &SMaterialVaultMaterialGrid::OnMaterialLeftClicked);
 	ListWidget->OnMaterialRightClicked.BindSP(this, &SMaterialVaultMaterialGrid::OnMaterialRightClicked);
 	ListWidget->OnMaterialDoubleClicked.BindSP(this, &SMaterialVaultMaterialGrid::OnMaterialDoubleClickedInternal);
+	ListWidget->OnMaterialDragDetected.BindSP(this, &SMaterialVaultMaterialGrid::HandleMaterialDragDetected);
 
 	return ListWidget;
 }
@@ -538,6 +549,68 @@ void SMaterialVaultMaterialGrid::OnMaterialMiddleClicked(TSharedPtr<FMaterialVau
 void SMaterialVaultMaterialGrid::OnMaterialDoubleClickedInternal(TSharedPtr<FMaterialVaultMaterialItem> Material)
 {
 	OnMaterialDoubleClicked.ExecuteIfBound(Material);
+}
+
+FReply SMaterialVaultMaterialGrid::HandleMaterialDragDetected(TSharedPtr<FMaterialVaultMaterialItem> Material, const FGeometry& MyGeometry, const FPointerEvent& MouseEvent)
+{
+	if (!Material.IsValid() || !MouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
+	{
+		return FReply::Unhandled();
+	}
+
+	TArray<TSharedPtr<FMaterialVaultMaterialItem>> MaterialsForDrag;
+	GatherDragMaterials(MaterialsForDrag, Material);
+
+	TArray<FAssetData> DraggedAssets;
+	for (const TSharedPtr<FMaterialVaultMaterialItem>& DragMaterial : MaterialsForDrag)
+	{
+		if (DragMaterial.IsValid() && DragMaterial->AssetData.IsValid())
+		{
+			DraggedAssets.Add(DragMaterial->AssetData);
+		}
+	}
+
+	if (DraggedAssets.Num() == 0)
+	{
+		return FReply::Unhandled();
+	}
+
+	TSharedRef<FAssetDragDropOp> DragDropOp = FAssetDragDropOp::New(DraggedAssets);
+
+	return FReply::Handled().BeginDragDrop(DragDropOp);
+}
+
+void SMaterialVaultMaterialGrid::GatherDragMaterials(TArray<TSharedPtr<FMaterialVaultMaterialItem>>& OutMaterials, TSharedPtr<FMaterialVaultMaterialItem> PrimaryItem) const
+{
+	OutMaterials.Reset();
+
+	auto AddUniqueMaterial = [&OutMaterials](TSharedPtr<FMaterialVaultMaterialItem> InMaterial)
+	{
+		if (InMaterial.IsValid())
+		{
+			OutMaterials.AddUnique(InMaterial);
+		}
+	};
+
+	AddUniqueMaterial(PrimaryItem);
+
+	if (TileView.IsValid())
+	{
+		const TArray<TSharedPtr<FMaterialVaultMaterialItem>> SelectedTiles = TileView->GetSelectedItems();
+		for (const TSharedPtr<FMaterialVaultMaterialItem>& SelectedTileMaterial : SelectedTiles)
+		{
+			AddUniqueMaterial(SelectedTileMaterial);
+		}
+	}
+
+	if (ListView.IsValid())
+	{
+		const TArray<TSharedPtr<FMaterialVaultMaterialItem>> SelectedListItems = ListView->GetSelectedItems();
+		for (const TSharedPtr<FMaterialVaultMaterialItem>& SelectedListMaterial : SelectedListItems)
+		{
+			AddUniqueMaterial(SelectedListMaterial);
+		}
+	}
 }
 
 TSharedPtr<SWidget> SMaterialVaultMaterialGrid::OnContextMenuOpening()

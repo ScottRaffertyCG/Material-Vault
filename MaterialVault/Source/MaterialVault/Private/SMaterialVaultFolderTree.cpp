@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #include "SMaterialVaultFolderTree.h"
 #include "MaterialVaultManager.h"
 #include "Engine/Engine.h"

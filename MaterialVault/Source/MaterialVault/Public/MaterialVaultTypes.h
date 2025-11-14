@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Pyre Labs. All Rights Reserved.
 
 #pragma once
 
@@ -37,6 +37,9 @@ struct MATERIALVAULT_API FMaterialVaultMetadata
 	UPROPERTY()
 	FString Category;
 
+	UPROPERTY()
+	FString CustomThumbnailPath;
+
 	FMaterialVaultMetadata()
 		: MaterialName(TEXT(""))
 		, Location(TEXT(""))
@@ -44,6 +47,7 @@ struct MATERIALVAULT_API FMaterialVaultMetadata
 		, LastModified(FDateTime::Now())
 		, Notes(TEXT(""))
 		, Category(TEXT(""))
+		, CustomThumbnailPath(TEXT(""))
 	{
 	}
 };

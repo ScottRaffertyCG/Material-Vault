@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #include "MaterialVault.h"
 #include "MaterialVaultCommands.h"
 #include "MaterialVaultStyle.h"

@@ -1,3 +1,5 @@
+// Copyright Pyre Labs. All Rights Reserved.
+
 #include "SMaterialVaultMetadataPanel.h"
 #include "MaterialVaultManager.h"
 #include "Engine/Engine.h"
@@ -10,6 +12,7 @@
 #include "Widgets/Input/SHyperlink.h"
 #include "Widgets/Images/SThrobber.h"
 #include "AssetThumbnail.h"
+#include "Engine/Texture2D.h"
 #include "ThumbnailRendering/ThumbnailManager.h"
 #include "ContentBrowserModule.h"
 #include "IContentBrowserSingleton.h"
@@ -17,8 +20,10 @@
 #include "Framework/MultiBox/MultiBoxBuilder.h"
 #include "Subsystems/AssetEditorSubsystem.h"
 #include "HAL/PlatformApplicationMisc.h"
-#include "Framework/Notifications/NotificationManager.h"
-#include "Widgets/Notifications/SNotificationList.h"
+#include "DesktopPlatformModule.h"
+#include "IDesktopPlatform.h"
+#include "Misc/FileHelper.h"
+#include "Modules/ModuleManager.h"
 
 #define LOCTEXT_NAMESPACE "MaterialVaultMetadataPanel"
 
@@ -438,6 +443,8 @@ void SMaterialVaultMetadataPanel::Construct(const FArguments& InArgs)
 			]
 		]
 	];
+
+	UpdatePreviewWidget();
 }
 
 void SMaterialVaultMetadataPanel::SetMaterialItem(TSharedPtr<FMaterialVaultMaterialItem> InMaterialItem)
@@ -449,6 +456,9 @@ void SMaterialVaultMetadataPanel::SetMaterialItem(TSharedPtr<FMaterialVaultMater
 	}
 
 	MaterialItem = InMaterialItem;
+	PreviewThumbnail.Reset();
+	CustomPreviewBrush.Reset();
+	CurrentPreviewTexture.Reset();
 	
 	if (MaterialItem.IsValid())
 	{
@@ -462,6 +472,7 @@ void SMaterialVaultMetadataPanel::SetMaterialItem(TSharedPtr<FMaterialVaultMater
 		bHasUnsavedChanges = false;
 	}
 
+	RefreshCustomPreviewBrush();
 	UpdateUI();
 }
 
@@ -530,10 +541,10 @@ TSharedRef<SWidget> SMaterialVaultMetadataPanel::CreateMaterialPreview()
 			.Padding(0, 0, 0, 8)
 			[
 				SNew(SBox)
-				.WidthOverride(256)
-				.HeightOverride(256)
+				.WidthOverride(PreviewImageSize.X)
+				.HeightOverride(PreviewImageSize.Y)
 				[
-					SNew(SBorder)
+					SAssignNew(PreviewImageContainer, SBorder)
 					.BorderImage(FAppStyle::GetBrush("ContentBrowser.AssetTileItem.DropShadow"))
 					.OnMouseButtonUp(FPointerEventHandler::CreateLambda([this](const FGeometry& Geometry, const FPointerEvent& MouseEvent) -> FReply
 					{
@@ -557,9 +568,7 @@ TSharedRef<SWidget> SMaterialVaultMetadataPanel::CreateMaterialPreview()
 					.HAlign(HAlign_Center)
 					.VAlign(VAlign_Center)
 					[
-						SNew(STextBlock)
-						.Text(LOCTEXT("MaterialPreview", "Material Preview\n(Right-click to change thumbnail)"))
-						.Justification(ETextJustify::Center)
+						CreatePreviewPlaceholder()
 					]
 				]
 			]
@@ -952,6 +961,8 @@ void SMaterialVaultMetadataPanel::UpdateUI()
 			TextureDependencies->SetMaterialItem(MaterialItem);
 		}
 	}
+
+	UpdatePreviewWidget();
 }
 
 void SMaterialVaultMetadataPanel::MarkAsChanged()
@@ -962,6 +973,69 @@ void SMaterialVaultMetadataPanel::MarkAsChanged()
 		if (MaterialItem.IsValid())
 		{
 			MaterialItem->Metadata.LastModified = FDateTime::Now();
+		}
+	}
+}
+
+void SMaterialVaultMetadataPanel::UpdatePreviewWidget()
+{
+	if (!PreviewImageContainer.IsValid())
+	{
+		return;
+	}
+
+	TSharedPtr<SWidget> ContentWidget;
+
+	if ((!CustomPreviewBrush.IsValid() || !CurrentPreviewTexture.IsValid()) && MaterialItem.IsValid() && !MaterialItem->Metadata.CustomThumbnailPath.IsEmpty())
+	{
+		RefreshCustomPreviewBrush();
+	}
+
+	if (CustomPreviewBrush.IsValid() && CurrentPreviewTexture.IsValid())
+	{
+		ContentWidget = SNew(SImage)
+			.Image(CustomPreviewBrush.Get());
+	}
+	else if (MaterialItem.IsValid())
+	{
+		PreviewThumbnail = MakeShareable(new FAssetThumbnail(MaterialItem->AssetData, PreviewImageSize.X, PreviewImageSize.Y, UThumbnailManager::Get().GetSharedThumbnailPool()));
+		ContentWidget = PreviewThumbnail->MakeThumbnailWidget();
+	}
+	else
+	{
+		CustomPreviewBrush.Reset();
+		CurrentPreviewTexture.Reset();
+		ContentWidget = CreatePreviewPlaceholder();
+	}
+
+	if (ContentWidget.IsValid())
+	{
+		PreviewImageContainer->SetContent(ContentWidget.ToSharedRef());
+	}
+	else
+	{
+		PreviewImageContainer->SetContent(SNullWidget::NullWidget);
+	}
+}
+
+TSharedRef<SWidget> SMaterialVaultMetadataPanel::CreatePreviewPlaceholder() const
+{
+	return SNew(STextBlock)
+		.Text(LOCTEXT("MaterialPreview", "Material Preview\n(Right-click to change thumbnail)"))
+		.Justification(ETextJustify::Center);
+}
+
+void SMaterialVaultMetadataPanel::RefreshCustomPreviewBrush()
+{
+	CustomPreviewBrush.Reset();
+	CurrentPreviewTexture.Reset();
+
+	if (MaterialItem.IsValid() && !MaterialItem->Metadata.CustomThumbnailPath.IsEmpty())
+	{
+		if (UTexture2D* CustomTexture = LoadObject<UTexture2D>(nullptr, *MaterialItem->Metadata.CustomThumbnailPath))
+		{
+			CurrentPreviewTexture = CustomTexture;
+			CustomPreviewBrush = MakeShareable(new FSlateDynamicImageBrush(CustomTexture, PreviewImageSize, CustomTexture->GetFName()));
 		}
 	}
 }
@@ -1029,16 +1103,16 @@ TSharedPtr<SWidget> SMaterialVaultMetadataPanel::OnMaterialPreviewContextMenuOpe
 		.Padding(0, 0, 4, 0)
 		[
 			SNew(SImage)
-			.Image(FAppStyle::GetBrush("Icons.Image"))
+			.Image(FAppStyle::GetBrush("EditorStyle.PaletteIcon"))
 		]
 		+ SHorizontalBox::Slot()
 		.VAlign(VAlign_Center)
 		[
 			SNew(STextBlock)
-			.Text(LOCTEXT("ChangeThumbnail", "Change Thumbnail/Swatch"))
+			.Text(LOCTEXT("UploadSwatch", "Upload Custom Swatch Preview"))
 		],
 		NAME_None,
-		LOCTEXT("ChangeThumbnailTooltip", "Select a custom image file to use as thumbnail")
+		LOCTEXT("ChangeThumbnailTooltip", "Select a custom preview image for this material")
 	);
 	
 	return MenuBuilder.MakeWidget();
@@ -1046,19 +1120,56 @@ TSharedPtr<SWidget> SMaterialVaultMetadataPanel::OnMaterialPreviewContextMenuOpe
 
 void SMaterialVaultMetadataPanel::OnChangeThumbnail()
 {
-	if (!MaterialItem.IsValid())
+	if (!MaterialItem.IsValid() || !MaterialVaultManager)
 	{
 		return;
 	}
-	
-	// TODO: Open file dialog to select image file
-	// For now, show a placeholder notification
-	FNotificationInfo Info(LOCTEXT("CustomThumbnailNotImplemented", "Custom thumbnail feature will be implemented in a future update. Currently supports material preview only."));
-	Info.ExpireDuration = 3.0f;
-	Info.bFireAndForget = true;
-	Info.Image = FAppStyle::GetBrush("Icons.Info");
-	
-	FSlateNotificationManager::Get().AddNotification(Info);
+
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
+	if (!DesktopPlatform)
+	{
+		return;
+	}
+
+	void* ParentWindowHandle = nullptr;
+	if (FSlateApplication::IsInitialized())
+	{
+		const TSharedPtr<SWindow> ActiveWindow = FSlateApplication::Get().GetActiveTopLevelWindow();
+		ParentWindowHandle = ActiveWindow.IsValid() ? ActiveWindow->GetNativeWindow()->GetOSWindowHandle() : nullptr;
+	}
+
+	TArray<FString> SelectedFiles;
+	const bool bOpened = DesktopPlatform->OpenFileDialog(
+		ParentWindowHandle,
+		TEXT("Select Swatch Image"),
+		FPaths::ProjectContentDir(),
+		TEXT(""),
+		TEXT("Image Files|*.png;*.jpg;*.jpeg;*.bmp"),
+		EFileDialogFlags::None,
+		SelectedFiles
+	);
+
+	if (!bOpened || SelectedFiles.Num() == 0)
+	{
+		return;
+	}
+
+	const FString SourceFile = SelectedFiles[0];
+	if (!PlatformFile.FileExists(*SourceFile))
+	{
+		return;
+	}
+
+	if (UTexture2D* ImportedTexture = MaterialVaultManager->ImportCustomThumbnail(MaterialItem, SourceFile))
+	{
+		PreviewThumbnail.Reset();
+		MaterialItem->Metadata.CustomThumbnailPath = ImportedTexture->GetPathName();
+		CustomPreviewBrush = MakeShareable(new FSlateDynamicImageBrush(ImportedTexture, PreviewImageSize, ImportedTexture->GetFName()));
+		CurrentPreviewTexture = ImportedTexture;
+		UpdatePreviewWidget();
+		MarkAsChanged();
+	}
 }
 
 bool SMaterialVaultMetadataPanel::RenameAsset(const FString& NewName)
@@ -1081,15 +1192,6 @@ bool SMaterialVaultMetadataPanel::RenameAsset(const FString& NewName)
 	
 	// Mark as changed for saving
 	MarkAsChanged();
-
-	// Show success notification
-	FNotificationInfo Info(FText::Format(LOCTEXT("MetadataNameUpdated", "Updated material display name from '{0}' to '{1}'"), 
-		FText::FromString(OldName), FText::FromString(NewName)));
-	Info.ExpireDuration = 3.0f;
-	Info.bFireAndForget = true;
-	Info.Image = FAppStyle::GetBrush("Icons.SuccessWithColor");
-	
-	FSlateNotificationManager::Get().AddNotification(Info);
 
 	return true;
 }
