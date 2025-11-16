@@ -225,7 +225,11 @@ UTexture2D* FMaterialVaultThumbnailManager::GenerateMaterialThumbnail(UMaterialI
 	RenderTarget->UpdateResourceImmediate(true);
 
 	FTextureRenderTargetResource* RenderTargetResource = RenderTarget->GameThread_GetRenderTargetResource();
-	FCanvas Canvas(RenderTargetResource, nullptr, 0, 0, 0, GMaxRHIFeatureLevel);
+	FCanvas Canvas(
+		RenderTargetResource,
+		nullptr,
+		nullptr,
+		static_cast<ERHIFeatureLevel::Type>(GMaxRHIFeatureLevel));
 	Canvas.Clear(FLinearColor::Transparent);
 
 	FCanvasTileItem TileItem(FVector2D::ZeroVector, Material->GetRenderProxy(), FVector2D(ThumbnailSize, ThumbnailSize));
