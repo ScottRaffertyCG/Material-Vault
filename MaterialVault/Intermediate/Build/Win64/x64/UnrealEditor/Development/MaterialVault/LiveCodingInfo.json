@@ -2,10 +2,20 @@
 	"RemapUnityFiles": 
 	{
 		"Module.MaterialVault.cpp.obj": [
+			"MaterialVault.init.gen.cpp.obj",
+			"MaterialVaultManager.gen.cpp.obj",
+			"MaterialVaultTypes.gen.cpp.obj",
 			"PerModuleInline.gen.cpp.obj",
 			"MaterialVault.cpp.obj",
 			"MaterialVaultCommands.cpp.obj",
-			"MaterialVaultStyle.cpp.obj"
+			"MaterialVaultManager.cpp.obj",
+			"MaterialVaultStyle.cpp.obj",
+			"MaterialVaultThumbnailManager.cpp.obj",
+			"SMaterialVaultCategoriesPanel.cpp.obj",
+			"SMaterialVaultFolderTree.cpp.obj",
+			"SMaterialVaultMaterialGrid.cpp.obj",
+			"SMaterialVaultMetadataPanel.cpp.obj",
+			"SMaterialVaultWidget.cpp.obj"
 		]
 	}
 }
